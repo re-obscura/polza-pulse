@@ -3,7 +3,7 @@
    Реализует контракт IpcRequest (renderer → main) и IpcEvent (main → renderer).
    ========================================================================== */
 
-import { ipcMain, BrowserWindow, shell } from "electron";
+import { ipcMain, BrowserWindow, shell, app } from "electron";
 import { join } from "node:path";
 import { getKey, setKey, getSettings, setSettings, getCache } from "./store";
 import { pollOnce, startPolling } from "./poller";
@@ -50,6 +50,9 @@ export function registerIpc(): void {
     quitAndInstall();
     return true;
   });
+
+  // ---- Версия ----
+  ipcMain.handle("GET_VERSION", () => app.getVersion());
 
   // ---- Внешние действия ----
   ipcMain.handle("OPEN_EXTERNAL", (_e, url: string) => {

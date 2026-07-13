@@ -335,6 +335,8 @@ async function loadSettingsUI(): Promise<void> {
   optBaseUrl.value = s.baseUrl;
   const key = await window.polza.getKey();
   keyValueInput.value = key?.value ?? "";
+  // Подтягиваем реальную версию из package.json → app.getVersion()
+  $<HTMLSpanElement>("app-version").textContent = await window.polza.getVersion();
 }
 
 async function saveSettingsFromUI(): Promise<void> {

@@ -32,6 +32,9 @@ const polza = {
   checkForUpdates: (): Promise<UpdateInfo> => ipcRenderer.invoke("CHECK_UPDATES"),
   installUpdate: (): Promise<boolean> => ipcRenderer.invoke("INSTALL_UPDATE"),
 
+  // ---- Версия ----
+  getVersion: (): Promise<string> => ipcRenderer.invoke("GET_VERSION"),
+
   // ---- Внешние действия ----
   openExternal: (url: string): Promise<boolean> =>
     ipcRenderer.invoke("OPEN_EXTERNAL", url),
