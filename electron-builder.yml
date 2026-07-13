@@ -17,9 +17,9 @@ files:
   - icons/**
   - package.json
 
-# Иконка приложения (256x256 .ico или .png) — для установщика и окна.
+# Иконка приложения (минимум 256x256 .ico или .png) — для установщика и окна.
 win:
-  icon: icons/icon-128.png
+  icon: icons/icon-256.png
   target:
     - target: nsis
       arch: [x64]

@@ -130,7 +130,7 @@ function makeIcon(size) {
 }
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-for (const size of [16, 32, 48, 128]) {
+for (const size of [16, 32, 48, 128, 256]) {
   const png = encodePng(makeIcon(size));
   const file = join(outDir, `icon-${size}.png`);
   writeFileSync(file, png);
