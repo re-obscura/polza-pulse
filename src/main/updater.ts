@@ -1,8 +1,7 @@
 /* ============================================================================
    updater.ts — автообновление через electron-updater.
-   Generic provider качает latest.yml + .exe с Azure публичного URL
-   (см. electron-builder.yml → publish.url).
-   Проверка при каждом запуске + по запросу из настроек.
+   GitHub Releases: electron-updater тянет latest.yml + .exe из публичного
+   репозитория анонимно. Проверка при каждом запуске + по запросу из настроек.
    ========================================================================== */
 
 import { autoUpdater } from "electron-updater";
@@ -15,6 +14,13 @@ let initialized = false;
 export function initUpdater(): void {
   if (initialized) return;
   initialized = true;
+
+  // Явно указываем GitHub-релизы, чтобы не зависеть от метаданных сборки.
+  autoUpdater.setFeedURL({
+    provider: "github",
+    owner: "re-obscura",
+    repo: "polza-pulse",
+  });
 
   // В dev-режиме electron-updater не работает — отключаем лишний шум.
   autoUpdater.forceDevUpdateConfig = false;

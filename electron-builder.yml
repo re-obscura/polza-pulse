@@ -32,11 +32,11 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: Polza Pulse
 
-# Автообновление: generic provider.
-# URL указывает на каталог, где лежат latest.yml + polza-pulse-Setup-x.y.z.exe.
-# CI (Azure DevOps pipeline) выкладывает артефакты сборки сюда.
-# ЗАМЕНИТЕ URL на ваш актуальный Azure публичный путь перед релизом.
+# Автообновление: GitHub Releases.
+# electron-builder публикует артефакты сборки в GitHub Releases.
+# Для публикации нужен GH_TOKEN (или GITHUB_TOKEN в Actions) с правами repo.
+# electron-updater в рантайме тянет latest.yml и .exe анонимно (публичный репо).
 publish:
-  provider: generic
-  url: https://YOUR-AZOR.azureedge.net/polza-pulse/releases/
-  channel: latest
+  provider: github
+  owner: re-obscura
+  repo: polza-pulse
