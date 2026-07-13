@@ -15,6 +15,8 @@ export interface SparklineOptions {
   strokeWidth?: number;
   /** Паддинги внутри canvas, px. */
   padding?: number;
+  /** Число вертикальных линий сетки (например, 30 для дней). */
+  gridLines?: number;
 }
 
 /** Точка графика для hit-test (тултип). */
@@ -83,6 +85,24 @@ export function drawSparkline(
     grad.addColorStop(1, withAlpha(color, 0));
     ctx.fillStyle = grad;
     ctx.fill();
+  }
+
+  // Тонкие вертикальные линии сетки — по одной на каждую точку данных.
+  const gridLines = opts.gridLines;
+  if (gridLines && gridLines > 1) {
+    ctx.beginPath();
+    for (let i = 0; i < gridLines; i++) {
+      const gx = xAt(n === 1 ? 0 : (i / (gridLines - 1)) * (n - 1));
+      // Рисуем каждую 7-ю линию чуть заметнее (недельные границы).
+      ctx.strokeStyle = (i % 7 === 0)
+        ? withAlpha(color, 0.18)
+        : withAlpha(color, 0.07);
+      ctx.lineWidth = 0.5;
+      ctx.moveTo(gx, pad);
+      ctx.lineTo(gx, pad + innerH);
+      ctx.stroke();
+    }
+    ctx.closePath();
   }
 
   // Линия

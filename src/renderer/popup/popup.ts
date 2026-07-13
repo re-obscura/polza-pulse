@@ -48,7 +48,6 @@ const refreshIco = btnRefresh.querySelector<HTMLElement>(".refresh-ico")!;
 // Настройки
 const optLimit = $<HTMLInputElement>("opt-limit");
 const optInterval = $<HTMLSelectElement>("opt-interval");
-const optForecast = $<HTMLSelectElement>("opt-forecast");
 const optBadge = $<HTMLSelectElement>("opt-badge");
 const optTheme = $<HTMLSelectElement>("opt-theme");
 const optBaseUrl = $<HTMLInputElement>("opt-baseurl");
@@ -284,10 +283,10 @@ function sparklineColor(): string {
 function drawSparklineNow(): void {
   if (chartSeries.length === 0) return;
   const color = sparklineColor();
-  console.log("[polza] sparkline redraw, theme:", document.documentElement.getAttribute("data-theme"), "color:", color);
   drawSparkline(sparkCanvas, {
     values: chartSeries.map((d) => d.value),
     color,
+    gridLines: chartSeries.length,
   });
 }
 
@@ -329,7 +328,6 @@ async function loadSettingsUI(): Promise<void> {
   const s = await window.polza.getSettings();
   optLimit.value = String(s.spendLimit);
   optInterval.value = String(s.pollIntervalMin);
-  optForecast.value = s.forecastMode;
   optBadge.value = s.badgeMode;
   optTheme.value = s.theme;
   optBaseUrl.value = s.baseUrl;
@@ -343,7 +341,6 @@ async function saveSettingsFromUI(): Promise<void> {
   const patch: Partial<Settings> = {
     pollIntervalMin: Number(optInterval.value) || 5,
     spendLimit: Number(optLimit.value) || 0,
-    forecastMode: optForecast.value === "mean" ? "mean" : "median",
     badgeMode: optBadge.value === "spendToday" ? "spendToday" : "balance",
     theme: optTheme.value as Settings["theme"],
     baseUrl: optBaseUrl.value.trim() || "https://polza.ai/api/v1",
@@ -425,7 +422,7 @@ function bindEvents(): void {
     showSettings(true);
   });
 
-  [optLimit, optInterval, optForecast, optBadge, optBaseUrl, optTheme].forEach(
+  [optLimit, optInterval, optBadge, optBaseUrl, optTheme].forEach(
     (el) => el.addEventListener("change", () => void saveSettingsFromUI())
   );
 
