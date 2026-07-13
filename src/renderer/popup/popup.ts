@@ -173,7 +173,7 @@ function renderTopModels(cache: KeyCache): void {
   const top = [...map.entries()]
     .map(([model, v]) => ({ model, ...v }))
     .sort((a, b) => b.cost - a.cost)
-    .slice(0, 3);
+    .slice(0, 5);
 
   topModels.innerHTML = "";
   if (top.length === 0) {

@@ -11,6 +11,13 @@ body {
   background: var(--bg);
   width: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Основной контент растягивается на всё свободное место. */
+.popup__body {
+  flex: 1 1 auto;
 }
 
 /* Когда открыто в отдельном окне (html.detached) — расширяем. */
@@ -173,11 +180,10 @@ html.detached .popup {
 }
 .top-models .model-name {
   color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   min-width: 0;
   flex: 1 1 auto;
+  /* Перенос длинных названий моделей вместо обрезания. */
+  word-break: break-word;
 }
 .top-models .model-cost {
   color: var(--ink-2);

@@ -52,7 +52,7 @@ function applyThemeToNative(pref: ThemePref): void {
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
     width: 420,
-    height: 690,
+    height: 740,
     minWidth: 380,
     minHeight: 480,
     show: false, // показываем после ready-to-show
