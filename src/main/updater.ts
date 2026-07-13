@@ -1,8 +1,9 @@
 /* ============================================================================
    updater.ts — лёгкое автообновление через Azure DevOps REST API + NTLM.
 
-   Артефакты (latest.yml + .exe + .blockmap) хранятся в ветке releases Git-репозитория.
-   Приложение качает их через REST API (download=true), NTLM — через Chromium/SSPI.
+   Артефакты (latest.yml + .exe + .blockmap) хранятся в папке releases/
+   ветки dev Git-репозитория. Приложение качает их через REST API
+   (download=true), NTLM — через Chromium/SSPI.
 
    Формат latest.yml — стандартный electron-builder (YAML):
      version: 1.0.11
@@ -27,12 +28,15 @@ import type { UpdateInfo } from "../types";
 // Константы
 // ---------------------------------------------------------------------------
 
-/** Azure DevOps REST API base — загрузка файла из ветки releases. */
+/** Azure DevOps REST API base — загрузка файла из папки releases/ ветки dev. */
 const ORG_URL = "https://s-tfs.intellectika.ru/AiCollection/Polza_Pulse";
 const REPO_ID = "Polza_Pulse";
 const DOWNLOAD_API = `${ORG_URL}/_apis/git/repositories/${REPO_ID}/items`;
-const BRANCH = "releases";
+const BRANCH = "dev";
 const API_VERSION = "7.1";
+
+/** Префикс пути в репозитории к папке с релизными артефактами. */
+const RELEASES_DIR = "releases";
 
 // ---------------------------------------------------------------------------
 // Состояние
@@ -46,9 +50,9 @@ let downloadInProgress = false;
 // Утилиты
 // ---------------------------------------------------------------------------
 
-/** Построить URL для скачивания файла из ветки releases через REST API. */
-function buildDownloadUrl(filePath: string): string {
-  const path = encodeURIComponent(filePath.startsWith("/") ? filePath : `/${filePath}`);
+/** Построить URL для скачивания файла из папки releases/ ветки dev через REST API. */
+function buildDownloadUrl(fileName: string): string {
+  const path = encodeURIComponent(`/${RELEASES_DIR}/${fileName}`);
   return `${DOWNLOAD_API}?path=${path}&versionDescriptor.version=${BRANCH}&download=true&api-version=${API_VERSION}`;
 }
 

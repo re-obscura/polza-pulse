@@ -12,6 +12,13 @@ dist/
 *.exe
 *.blockmap
 
+# Папка с релизными артефактами для автообновления (в Git, ветка dev).
+# Исключаем из общих правил *.exe и *.blockmap.
+!releases/
+!releases/*.exe
+!releases/*.blockmap
+!releases/latest.yml
+
 # Логи
 *.log
 

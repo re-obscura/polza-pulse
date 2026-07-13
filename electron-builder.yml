@@ -17,12 +17,20 @@ files:
   - icons/**
   - package.json
 
+# Без code signing — внутреннее корпоративное приложение.
+forceCodeSigning: false
+
 # Иконка приложения (минимум 256x256 .ico или .png) — для установщика и окна.
 win:
   icon: icons/icon-256.png
   target:
     - target: nsis
       arch: [x64]
+  # Без подписи — внутреннее корпоративное приложение.
+  sign: null
+  signingHashAlgorithms: null
+  certificateFile: null
+  certificatePassword: null
 
 nsis:
   oneClick: false
@@ -32,8 +40,12 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: Polza Pulse
 
-# Автообновление: IIS-виртуальный каталог с NTLM (Windows-аутентификация).
-# Файлы latest.yml, .exe и .blockmap раздаются через IIS на Azure DevOps Server:
-#   https://s-tfs.intellectika.ru/polza-updates/
-# Публикация — вручную или через azure-pipelines.yml.
-# electron-builder publish здесь не используется — артефакты копируются отдельно.
+# Генерируем latest.yml (нужно для автообновления).
+# Провайдер generic с dummy URL — сам electron-builder ничего не публикует,
+# только создаёт файл latest.yml рядом с .exe.
+publish:
+  provider: generic
+  url: "https://example.com/updates"
+
+# Автообновление: артефакты (latest.yml, .exe, .blockmap) копируются в папку
+# releases/ ветки dev и скачиваются через Azure DevOps REST API.
