@@ -55,7 +55,7 @@ function createMainWindow(): BrowserWindow {
     resizable: true,
     maximizable: false,
     autoHideMenuBar: true,
-    title: "Polza Pulse",
+    title: "polza-pulse",
     backgroundColor: "#1a1a1a",
     webPreferences: {
       preload: join(__dirname, "..", "dist-preload", "index.js"),
