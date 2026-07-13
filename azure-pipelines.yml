@@ -29,7 +29,28 @@ steps:
   - script: npm run dist
     displayName: "Сборка .exe + latest.yml (electron-builder)"
 
-  # Публикация артефактов: всё содержимое папки release/
+  # Копирование артефактов на IIS-сервер обновлений.
+  # Сервер: s-tfs.intellectika.local (192.168.244.147)
+  # Путь: \\s-tfs.intellectika.local\C$\inetpub\polza-updates\
+  # Требуется: чтобы build-агент имел сетевой доступ к серверу.
+  - powershell: |
+      $source = "$(Build.SourcesDirectory)\release"
+      $dest   = "\\s-tfs.intellectika.local\C$\inetpub\polza-updates"
+
+      # Копируем все файлы: *.exe, *.blockmap, latest.yml, builder-debug.yml
+      Write-Host "[deploy] source: $source"
+      Write-Host "[deploy] dest:   $dest"
+      robocopy $source $dest /NP /NFL /NDL /NJH /NJS
+      # robocopy exit code 0..7 = success (1 = copied, 2 = extra, etc.)
+      $rc = $LASTEXITCODE
+      if ($rc -ge 8) {
+        Write-Error "[deploy] robocopy failed with exit code $rc"
+        exit 1
+      }
+      Write-Host "[deploy] done (robocopy exit $rc)"
+    displayName: "Деплой на IIS (polza-updates)"
+
+  # Артефакты — для ручной загрузки, если деплой не настроен.
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: "$(Build.SourcesDirectory)/release"
