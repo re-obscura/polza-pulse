@@ -24,8 +24,13 @@ export function initUpdater(): void {
 
   // В dev-режиме electron-updater не работает — отключаем лишний шум.
   autoUpdater.forceDevUpdateConfig = false;
+  // Качаем обновление в фоне, но НЕ устанавливаем при выходе через autoInstallOnAppQuit —
+  // это конфликтует с NSIS (процесс ещё жив). Вместо этого quitAndInstall() вызывается
+  // явно при выходе через меню трея, если обновление скачано.
   autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.autoInstallOnAppQuit = false;
+
+  let updateDownloaded = false;
 
   autoUpdater.on("update-available", (info) => {
     console.log("[polza] update available:", info.version);
@@ -43,8 +48,9 @@ export function initUpdater(): void {
 
   autoUpdater.on("update-downloaded", (info) => {
     console.log("[polza] update downloaded:", info.version);
+    updateDownloaded = true;
     new Notification({
-      title: "Polza Monitor",
+      title: "Polza Pulse",
       body: `Скачано обновление ${info.version}. Применю при выходе из приложения.`,
       silent: false,
     }).show();
@@ -84,4 +90,9 @@ export async function checkForUpdates(): Promise<UpdateInfo> {
 /** Установить скачанное обновление и перезапустить. */
 export function quitAndInstall(): void {
   autoUpdater.quitAndInstall();
+}
+
+/** Проверить, скачано ли обновление и готово к установке. */
+export function isUpdateDownloaded(): boolean {
+  return updateDownloaded;
 }

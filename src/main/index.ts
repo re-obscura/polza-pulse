@@ -15,7 +15,7 @@ import {
 import { join } from "node:path";
 import { getSettings, onStoreChange } from "./store";
 import { pollOnce, startPolling } from "./poller";
-import { checkOnStartup } from "./updater";
+import { checkOnStartup, isUpdateDownloaded, quitAndInstall } from "./updater";
 import { createTray, updateTrayStatus } from "./tray";
 import { registerIpc } from "./ipc";
 import { getCache } from "./store";
@@ -108,7 +108,12 @@ app.whenReady().then(() => {
     () => void pollOnce(),
     () => {
       isQuitting = true;
-      app.quit();
+      // Если скачано обновление — установить и перезапустить, иначе просто выйти.
+      if (isUpdateDownloaded()) {
+        quitAndInstall();
+      } else {
+        app.quit();
+      }
     }
   );
   tray.on("click", () => {
