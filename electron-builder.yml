@@ -1,0 +1,42 @@
+# Конфигурация electron-builder для Polza Pulse.
+# NSIS installer (.exe) для Windows + автообновление через generic provider.
+
+appId: ai.polza.monitor
+productName: Polza Pulse
+copyright: Copyright © Polza
+
+directories:
+  output: release
+  buildResources: build
+
+# Файлы, попадающие в сборку (результат esbuild).
+files:
+  - dist-main/**
+  - dist-preload/**
+  - dist-renderer/**
+  - icons/**
+  - package.json
+
+# Иконка приложения (256x256 .ico или .png) — для установщика и окна.
+win:
+  icon: icons/icon-128.png
+  target:
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Polza Pulse
+
+# Автообновление: generic provider.
+# URL указывает на каталог, где лежат latest.yml + polza-pulse-Setup-x.y.z.exe.
+# CI (Azure DevOps pipeline) выкладывает артефакты сборки сюда.
+# ЗАМЕНИТЕ URL на ваш актуальный Azure публичный путь перед релизом.
+publish:
+  provider: generic
+  url: https://YOUR-AZOR.azureedge.net/polza-pulse/releases/
+  channel: latest

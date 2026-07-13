@@ -1,0 +1,121 @@
+/* Модели — в стиле истории и главной. */
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+}
+
+.hp {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* Шапка как в истории */
+.hp__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--rule-w) solid var(--rule);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.hp__back {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  cursor: pointer;
+}
+.hp__back:hover { color: var(--ink-2); }
+.hp__actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.refresh-ico.is-spinning {
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+.hp__sub {
+  padding: var(--space-3) var(--space-4) 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+/* Секции как на главной */
+.section {
+  padding: var(--space-3) var(--space-4);
+}
+.section + .section {
+  border-top: var(--rule-w) solid var(--rule);
+}
+
+/* Строка модели: название слева, расход/доля справа */
+.model-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-size: var(--fs-body);
+}
+.model-row + .model-row {
+  border-top: var(--rule-w) solid var(--rule);
+}
+.model-row__info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.model-row__name {
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.model-row__count {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  white-space: nowrap;
+}
+.model-row__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.model-row__cost {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 70px;
+  text-align: right;
+}
+.model-row__share {
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: right;
+}
+.model-row__bar {
+  width: 60px;
+  height: 4px;
+  background: var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.model-row__bar-fill {
+  height: 100%;
+  background: var(--ink);
+  border-radius: 999px;
+}

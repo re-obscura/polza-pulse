@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polza</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup" id="popup-root">
+      <!-- Шапка -->
+      <header class="popup__head">
+        <span class="popup__logo">Polza</span>
+        <div class="popup__head-actions">
+          <button class="btn btn--ghost btn--sm" id="btn-theme" title="Сменить тему" aria-label="Сменить тему">◐</button>
+          <button class="btn btn--ghost btn--sm" id="btn-settings" title="Настройки" aria-label="Настройки">⚙</button>
+        </div>
+      </header>
+
+      <!-- ===== Вид: настройки ===== -->
+      <section class="settings-panel" id="view-settings" hidden>
+        <header class="settings-panel__head">
+          <button class="btn btn--ghost btn--sm" id="btn-close-settings" aria-label="Закрыть">← Назад</button>
+        </header>
+
+        <!-- API-ключ -->
+        <section class="section">
+          <div class="section__label">API-ключ</div>
+          <form id="key-form" autocomplete="off" style="display:flex;gap:var(--space-2)">
+            <input class="input" id="key-value" type="password" placeholder="pza_..." autocomplete="off" style="flex:1 1 auto;min-width:0" />
+            <button class="btn btn--primary" type="submit" id="key-save-btn">Сохранить</button>
+          </form>
+          <p class="s-hint" id="key-hint">Хранится только на этом устройстве.</p>
+        </section>
+
+        <!-- Дневной лимит -->
+        <section class="section" style="padding-bottom:var(--space-5)">
+          <div class="section__label">Дневной лимит</div>
+          <div style="display:flex;align-items:baseline;gap:var(--space-3)">
+            <input class="input nums" id="opt-limit" type="number" min="0" step="100" value="4000" style="font-size:var(--fs-display);font-weight:var(--fw-semibold);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.1;width:100%;border:0;background:none;color:var(--ink);padding:0;outline:none;border-bottom:1px dashed var(--rule-strong)" />
+            <span style="color:var(--ink-3);font-size:var(--fs-body);flex-shrink:0">₽</span>
+          </div>
+          <p style="color:var(--ink-3);font-size:var(--fs-micro);margin-top:var(--space-1)">
+            Порог расхода за один день.
+          </p>
+        </section>
+
+        <!-- Параметры -->
+        <section class="section">
+          <div class="section__label">Параметры</div>
+          <ul class="top-models top-models--settings">
+            <li>
+              <span class="model-name">Интервал опроса</span>
+              <select class="select" id="opt-interval">
+                <option value="1">1 мин</option>
+                <option value="5">5 мин</option>
+                <option value="15">15 мин</option>
+                <option value="60">1 час</option>
+              </select>
+            </li>
+            <li>
+              <span class="model-name">Расчёт расхода</span>
+              <select class="select" id="opt-forecast">
+                <option value="median">Медиана</option>
+                <option value="mean">Среднее</option>
+              </select>
+            </li>
+            <li>
+              <span class="model-name">На иконке</span>
+              <select class="select" id="opt-badge">
+                <option value="spendToday">Расход сегодня</option>
+                <option value="balance">Баланс</option>
+              </select>
+            </li>
+            <li>
+              <span class="model-name">Тема</span>
+              <select class="select" id="opt-theme">
+                <option value="system">Системная</option>
+                <option value="light">Светлая</option>
+                <option value="dark">Тёмная</option>
+              </select>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Обновления -->
+        <section class="section">
+          <div class="section__label">Обновления</div>
+          <ul class="top-models">
+            <li>
+              <span>Версия <span id="app-version" style="color:var(--ink-3);font-size:var(--fs-small)">1.0.0</span></span>
+              <button class="btn btn--sm" id="btn-check-updates">Проверить</button>
+            </li>
+          </ul>
+          <p class="s-hint" id="update-hint">Проверка при каждом запуске.</p>
+        </section>
+
+        <!-- Продвинутое -->
+        <details class="section" style="cursor:default">
+          <summary class="section__label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none">
+            Продвинутое
+            <span style="font-size:10px;color:var(--ink-3);transition:transform 0.15s ease">▾</span>
+          </summary>
+          <div style="padding-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-2)">
+            <label style="display:flex;flex-direction:column;gap:var(--space-2)">
+              <span style="font-size:var(--fs-body);color:var(--ink)">Base URL API</span>
+              <input class="input" id="opt-baseurl" type="text" placeholder="https://polza.ai/api/v1" />
+            </label>
+            <p class="s-hint">Меняйте, только если знаете точный адрес.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- ===== Вид: нет ключа ===== -->
+      <div class="popup__body" id="view-empty" hidden>
+        <div class="empty">
+          <div class="empty__title">Ключ не добавлен</div>
+          <div class="empty__sub">Добавьте API-ключ в настройках.</div>
+        </div>
+        <div class="popup__actions">
+          <button class="btn btn--primary" id="btn-setup">Настройки</button>
+        </div>
+      </div>
+
+      <!-- ===== Вид: данные ===== -->
+      <div class="popup__body" id="view-main" hidden>
+        <!-- Лимит: главный показатель -->
+        <section class="section popup__balance">
+          <div class="popup__balance-label">
+            <span class="section__label" style="margin: 0">Сегодня потрачено</span>
+          </div>
+          <div class="popup__balance-row">
+            <div class="popup__balance-value nums" id="limit-spent">—</div>
+            <div class="popup__forecast" id="forecast-block">
+              <span class="dot dot--mute" id="forecast-dot"></span>
+              <span class="popup__forecast-text" id="forecast-text">—</span>
+            </div>
+          </div>
+          <!-- Лимит: прогресс-бар -->
+          <div class="popup__limit" id="limit-block">
+            <div class="popup__limit-head">
+              <span class="popup__limit-label"><span id="limit-pct">0%</span></span>
+              <span class="popup__limit-value nums" id="limit-value">0 ₽ / 4000 ₽</span>
+            </div>
+            <div class="bar">
+              <div class="bar__fill" id="limit-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Расход 1/7/30 -->
+        <section class="section">
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric__label">Сегодня</div>
+              <div class="metric__value nums" id="spend-1d">—</div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">7 дней</div>
+              <div class="metric__value nums" id="spend-7d">—</div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">30 дней</div>
+              <div class="metric__value nums" id="spend-30d">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Спарклайн с тултипом -->
+        <section class="section">
+          <div class="popup__chart-head">
+            <span class="section__label" style="margin: 0">Расход по дням</span>
+            <span class="popup__chart-range nums" id="chart-range">30 дней</span>
+          </div>
+          <div class="spark-wrap">
+            <canvas class="sparkline" id="sparkline" width="360" height="44"></canvas>
+            <div class="spark-tooltip" id="spark-tooltip" hidden></div>
+          </div>
+        </section>
+
+        <!-- Топ модели -->
+        <section class="section">
+          <div class="popup__chart-head">
+            <span class="section__label" style="margin: 0">Топ модели · 7 дней</span>
+            <a class="popup__all-link" id="btn-models" href="#">Все модели →</a>
+          </div>
+          <ul class="top-models" id="top-models"></ul>
+        </section>
+
+        <!-- Подвал: обновлено + кнопки -->
+        <section class="section popup__footer">
+          <span class="popup__updated" id="updated-at">—</span>
+          <div class="popup__footer-actions">
+            <button class="btn btn--sm" id="btn-refresh" title="Обновить">
+              <span class="refresh-ico">↻</span> Обновить
+            </button>
+            <button class="btn btn--sm btn--primary" id="btn-topup">Пополнить</button>
+          </div>
+        </section>
+
+        <!-- Ссылка на историю -->
+        <a class="popup__history-link" id="btn-history" href="#">
+          Подробная история и экспорт →
+        </a>
+      </div>
+
+      <!-- Баннер ошибки -->
+      <div class="popup__error" id="error-banner" hidden></div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
