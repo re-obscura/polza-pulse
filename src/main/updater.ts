@@ -5,7 +5,7 @@
    ========================================================================== */
 
 import { autoUpdater } from "electron-updater";
-import { Notification } from "electron";
+import { Notification, app } from "electron";
 import type { UpdateInfo } from "../types";
 
 let initialized = false;
@@ -77,8 +77,10 @@ export async function checkForUpdates(): Promise<UpdateInfo> {
     if (!result || !result.updateInfo) {
       return { available: false };
     }
-    const version = result.updateInfo.version;
-    return { available: true, version };
+    const latest = result.updateInfo.version;
+    // Если версия из релиза совпадает с установленной — обновления нет.
+    const available = latest !== app.getVersion();
+    return { available, version: available ? latest : undefined };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("[polza] update check failed:", msg);
