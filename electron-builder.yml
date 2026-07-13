@@ -1,0 +1,43 @@
+# Конфигурация electron-builder для Polza Pulse.
+# NSIS installer (.exe) для Windows + автообновление через generic provider.
+
+appId: ai.polza.monitor
+productName: Polza Pulse
+copyright: Copyright © Polza
+
+directories:
+  output: release
+  buildResources: build
+
+# Файлы, попадающие в сборку (результат esbuild).
+files:
+  - dist-main/**
+  - dist-preload/**
+  - dist-renderer/**
+  - icons/**
+  - package.json
+
+# Иконка приложения (минимум 256x256 .ico или .png) — для установщика и окна.
+win:
+  icon: icons/icon-256.png
+  target:
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Polza Pulse
+
+# Автообновление: GitHub Releases.
+# electron-builder публикует артефакты сборки в GitHub Releases.
+# Для публикации нужен GH_TOKEN (или GITHUB_TOKEN в Actions) с правами repo.
+# electron-updater в рантайме тянет latest.yml и .exe анонимно (публичный репо).
+publish:
+  provider: github
+  owner: re-obscura
+  repo: polza-pulse
+  releaseType: release

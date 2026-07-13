@@ -1,0 +1,42 @@
+# Зависимости
+node_modules/
+
+# Результаты сборки (esbuild)
+dist-main/
+dist-preload/
+dist-renderer/
+
+# Результаты electron-builder (установщики, latest.yml и т.д.)
+release/
+dist/
+*.exe
+*.blockmap
+
+# Логи
+*.log
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Env-файлы (токены, ключи)
+.env
+.env.local
+.env.*.local
+
+# ZCode
+.zcode/
+
+# Система macOS
+*.dmg
+
+# Система Linux
+*.AppImage
+*.snap
+*.deb
+*.rpm

@@ -1,0 +1,31 @@
+{
+  "name": "polza-pulse",
+  "version": "1.0.10",
+  "description": "Polza Pulse — расход и лимиты Polza.ai в трее Windows.",
+  "author": "Polza",
+  "license": "MIT",
+  "main": "dist-main/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && electron .",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "dist": "node scripts/build.mjs && electron-builder --config electron-builder.yml"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.5.4"
+  },
+  "allowScripts": {
+    "esbuild@0.23.1": true,
+    "electron@31.7.7": true
+  }
+}

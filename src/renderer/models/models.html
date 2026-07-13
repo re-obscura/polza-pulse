@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Разбивка по моделям — Polza Monitor</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+    <link rel="stylesheet" href="models.css" />
+  </head>
+  <body>
+    <div class="hp">
+      <!-- Шапка как в истории -->
+      <header class="hp__head">
+        <span class="hp__back" id="btn-close" title="Закрыть">← Модели</span>
+        <div class="hp__actions">
+          <select class="select select--sm" id="period">
+            <option value="7">7 дней</option>
+            <option value="30" selected>30 дней</option>
+          </select>
+          <button class="btn btn--ghost btn--sm" id="btn-refresh" title="Обновить">
+            <span class="refresh-ico">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <p class="hp__sub" id="sub">Расход за последние 30 дней.</p>
+
+      <!-- Сводка: metrics как на главной -->
+      <section class="section">
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric__label">Всего моделей</div>
+            <div class="metric__value nums" id="total-models">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric__label">Общий расход</div>
+            <div class="metric__value nums" id="total-spend">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric__label">Генераций</div>
+            <div class="metric__value nums" id="total-count">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Таблица моделей — каждая строка как .top-models li -->
+      <section class="section" style="padding:0">
+        <ul class="top-models" id="models-list"></ul>
+        <div class="empty" id="empty-state" hidden>
+          <div class="empty__title">Нет данных</div>
+          <div class="empty__sub">За выбранный период не было генераций.</div>
+        </div>
+      </section>
+    </div>
+
+    <script src="models.js"></script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>История — Polza Monitor</title>
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+    <link rel="stylesheet" href="history.css" />
+  </head>
+  <body>
+    <div class="hp">
+      <!-- Шапка как на главной -->
+      <header class="hp__head">
+        <span class="hp__back" id="btn-close" title="Закрыть">← История</span>
+        <div class="hp__actions">
+          <button class="btn btn--ghost btn--sm" id="btn-refresh" title="Обновить">
+            <span class="refresh-ico">↻</span>
+          </button>
+          <button class="btn btn--sm btn--primary" id="btn-export">Экспорт CSV</button>
+        </div>
+      </header>
+
+      <p class="hp__sub" id="sub">Детальный расход по вашему ключу.</p>
+
+      <!-- Сводка: 3 колонки как .metrics на главной -->
+      <section class="section">
+        <div class="metrics" id="summary"></div>
+      </section>
+
+      <!-- Фильтры -->
+      <section class="section">
+        <div class="section__label">Фильтры</div>
+        <div class="chips" id="chips-type">
+          <button class="chip is-active" data-type="">Все</button>
+          <button class="chip" data-type="chat">Chat</button>
+          <button class="chip" data-type="image">Image</button>
+          <button class="chip" data-type="video">Video</button>
+          <button class="chip" data-type="audio">Audio</button>
+        </div>
+        <div class="filters-row">
+          <select class="select select--sm" id="f-model">
+            <option value="">Все модели</option>
+          </select>
+          <select class="select select--sm" id="f-status">
+            <option value="">Любой статус</option>
+            <option value="completed">Завершено</option>
+            <option value="failed">Ошибка</option>
+            <option value="canceled">Отменено</option>
+          </select>
+          <input class="input input--sm" id="f-from" type="date" title="С" />
+          <input class="input input--sm" id="f-to" type="date" title="По" />
+          <button class="btn btn--ghost btn--sm" id="btn-reset">Сбросить</button>
+        </div>
+      </section>
+
+      <!-- Таблица -->
+      <section class="section table-section">
+        <div class="table-scroll">
+          <table class="table table--interactive" id="table">
+            <thead>
+              <tr>
+                <th data-sort="createdAt" class="sortable">Дата <span class="sort-ico"></span></th>
+                <th>Тип</th>
+                <th>Модель</th>
+                <th>Статус</th>
+                <th class="num">Токены</th>
+                <th data-sort="cost" class="sortable num">Расход <span class="sort-ico"></span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="empty-state" hidden>
+          <div class="empty__title">Нет генераций</div>
+          <div class="empty__sub">Измените фильтры или обновите данные.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Drawer деталей (компактный, в стиле главной) -->
+    <div class="drawer" id="drawer" hidden>
+      <div class="drawer__overlay" data-close></div>
+      <div class="drawer__panel" role="dialog" aria-label="Детали генерации">
+        <header class="drawer__head">
+          <h2 class="drawer__title">Детали</h2>
+          <button class="btn btn--ghost btn--sm" data-close aria-label="Закрыть">✕</button>
+        </header>
+        <div class="drawer__body" id="drawer-body"></div>
+      </div>
+    </div>
+
+    <script src="history.js"></script>
+  </body>
+</html>

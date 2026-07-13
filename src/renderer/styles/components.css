@@ -1,0 +1,432 @@
+/* ============================================================================
+   Компоненты UI: кнопки, поля, бейджи-статусы, таблицы, табы, карточки.
+   Рамс №6 «ненавязчивый»: без декоративных теней/градиентов; форма следует функции.
+   ========================================================================== */
+
+/* ---- Карточка / секция ---- */
+.card {
+  background: var(--surface);
+  border: var(--rule-w) solid var(--rule);
+  border-radius: var(--radius-md);
+}
+.card--flush {
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+.section {
+  padding: var(--space-4);
+}
+.section + .section {
+  border-top: var(--rule-w) solid var(--rule);
+}
+.section__label {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  margin-bottom: var(--space-3);
+  font-weight: var(--fw-medium);
+}
+
+/* ---- Кнопки ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  min-height: 34px;
+  border-radius: var(--radius-sm);
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+  white-space: nowrap;
+}
+.btn:hover {
+  background: var(--surface-2);
+}
+.btn:active {
+  background: var(--bg);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Основная кнопка — нейтральная (как Braun: «действие» не кричит цветом) */
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn--primary:hover {
+  opacity: 0.9;
+  background: var(--accent);
+}
+
+/* Кнопка-призрак (только текст/иконка) */
+.btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-2);
+  min-height: 30px;
+  padding: var(--space-1) var(--space-2);
+}
+.btn--ghost:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.btn--sm {
+  min-height: 28px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-small);
+}
+
+.btn--danger {
+  color: var(--alert);
+  border-color: var(--rule-strong);
+}
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--alert) 8%, var(--surface));
+}
+
+/* ---- Поля ввода ---- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field__label {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  font-weight: var(--fw-medium);
+}
+.field__hint {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+.field__error {
+  font-size: var(--fs-micro);
+  color: var(--alert);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 34px;
+  background: var(--bg);
+  border: var(--rule-w) solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  transition: border-color 0.12s ease;
+}
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.input::placeholder {
+  color: var(--ink-3);
+}
+
+/* Группировка строки ввода + кнопки */
+.input-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: stretch;
+}
+.input-row .input {
+  flex: 1 1 auto;
+}
+
+/* ---- Бейджи статуса (сигнальный цвет = состояние) ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+  border: var(--rule-w) solid transparent;
+}
+.badge--ok {
+  color: var(--ok-ink);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  border-color: color-mix(in srgb, var(--ok) 30%, transparent);
+}
+.badge--warn {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+  border-color: color-mix(in srgb, var(--warn) 30%, transparent);
+}
+.badge--alert {
+  color: var(--alert-ink);
+  background: color-mix(in srgb, var(--alert) 14%, transparent);
+  border-color: color-mix(in srgb, var(--alert) 30%, transparent);
+}
+.badge--mute {
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border-color: var(--rule);
+}
+
+/* Точечный индикатор состояния (●) */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dot--ok {
+  background: var(--ok);
+}
+.dot--warn {
+  background: var(--warn);
+}
+.dot--alert {
+  background: var(--alert);
+}
+.dot--mute {
+  background: var(--ink-3);
+}
+
+/* ---- Таблицы ---- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+.table thead th {
+  text-align: left;
+  font-weight: var(--fw-medium);
+  color: var(--ink-2);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--rule-w) solid var(--rule);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.table tbody td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--rule-w) solid var(--rule);
+  vertical-align: middle;
+}
+.table tbody tr {
+  transition: background 0.1s ease;
+}
+.table tbody tr:hover {
+  background: var(--surface-2);
+}
+.table tbody tr.is-selected {
+  background: var(--surface-2);
+}
+.table--interactive tbody tr {
+  cursor: pointer;
+}
+/* Подсветка дорогих генераций — мягкая, слева сигнальная полоска */
+.table tbody tr.is-costly td:first-child {
+  box-shadow: inset 2px 0 var(--alert);
+}
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.table thead th.num {
+  text-align: right;
+}
+
+/* ---- Табы (переключатель источника / периодов — будущ.) ---- */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.tab {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.tab:hover {
+  color: var(--ink);
+}
+.tab.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* ---- Прогресс-бар ---- */
+.bar {
+  height: 4px;
+  background: var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar__fill {
+  height: 100%;
+  background: var(--ink);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.bar__fill--ok {
+  background: var(--ok);
+}
+.bar__fill--warn {
+  background: var(--warn);
+}
+.bar__fill--alert {
+  background: var(--alert);
+}
+
+/* ---- Тосты / уведомления в интерфейсе ---- */
+.toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-small);
+  border: var(--rule-w) solid var(--rule);
+  background: var(--surface-2);
+}
+.toast--error {
+  border-color: color-mix(in srgb, var(--alert) 40%, var(--rule));
+  color: var(--alert-ink);
+}
+.toast--ok {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--rule));
+  color: var(--ok-ink);
+}
+
+/* ---- Пустое состояние / состояния загрузки ---- */
+.empty {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+}
+.empty__title {
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--space-1);
+}
+.empty__sub {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--rule) 37%,
+    var(--surface-2) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* ---- Спиннер ---- */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--rule-strong);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2s;
+  }
+}
+
+/* ---- Полоска-разделитель с подписью ---- */
+.divider-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink-2);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: var(--space-5) 0 var(--space-3);
+}
+.divider-label::before,
+.divider-label::after {
+  content: "";
+  flex: 1;
+  height: var(--rule-w);
+  background: var(--rule);
+}
+
+/* ---- Сетка метрик (3 колонки) ---- */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.metrics .metric {
+  padding: var(--space-3) var(--space-2);
+  text-align: center;
+}
+.metrics .metric + .metric {
+  border-left: var(--rule-w) solid var(--rule);
+}
+.metric__label {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  margin-bottom: var(--space-1);
+}
+.metric__value {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.metric__delta {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+  margin-top: 2px;
+}

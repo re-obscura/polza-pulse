@@ -1,0 +1,99 @@
+/* ============================================================================
+   updater.ts — автообновление через electron-updater.
+   GitHub Releases: electron-updater тянет latest.yml + .exe из публичного
+   репозитория анонимно. Проверка при каждом запуске + по запросу из настроек.
+   ========================================================================== */
+
+import { autoUpdater } from "electron-updater";
+import { Notification, app } from "electron";
+import type { UpdateInfo } from "../types";
+
+let initialized = false;
+let updateDownloaded = false;
+
+/** Инициализация: настройка поведения и подписки на события. */
+export function initUpdater(): void {
+  if (initialized) return;
+  initialized = true;
+
+  // Явно указываем GitHub-релизы, чтобы не зависеть от метаданных сборки.
+  autoUpdater.setFeedURL({
+    provider: "github",
+    owner: "re-obscura",
+    repo: "polza-pulse",
+  });
+
+  // В dev-режиме electron-updater не работает — отключаем лишний шум.
+  autoUpdater.forceDevUpdateConfig = false;
+  // Качаем обновление в фоне, но НЕ устанавливаем при выходе через autoInstallOnAppQuit —
+  // это конфликтует с NSIS (процесс ещё жив). Вместо этого quitAndInstall() вызывается
+  // явно при выходе через меню трея, если обновление скачано.
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = false;
+
+  autoUpdater.on("update-available", (info) => {
+    console.log("[polza] update available:", info.version);
+  });
+
+  autoUpdater.on("update-not-available", () => {
+    console.log("[polza] app is up to date");
+  });
+
+  autoUpdater.on("download-progress", (progress) => {
+    console.log(
+      `[polza] downloading update: ${progress.percent.toFixed(1)}%`
+    );
+  });
+
+  autoUpdater.on("update-downloaded", (info) => {
+    console.log("[polza] update downloaded:", info.version);
+    updateDownloaded = true;
+    new Notification({
+      title: "Polza Pulse",
+      body: `Скачано обновление ${info.version}. Применю при выходе из приложения.`,
+      silent: false,
+    }).show();
+  });
+
+  autoUpdater.on("error", (err) => {
+    console.error("[polza] updater error:", err.message);
+  });
+}
+
+/** Проверить обновления при запуске (тихо, в фоне). */
+export function checkOnStartup(): void {
+  initUpdater();
+  // catch ошибки, чтобы не ронять приложение при недоступности сервера.
+  autoUpdater.checkForUpdatesAndNotify().catch((e) => {
+    console.error("[polza] startup update check failed:", e?.message ?? e);
+  });
+}
+
+/** Проверить обновления по запросу из настроек. */
+export async function checkForUpdates(): Promise<UpdateInfo> {
+  initUpdater();
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    if (!result || !result.updateInfo) {
+      return { available: false };
+    }
+    const latest = result.updateInfo.version;
+    // Если версия из релиза совпадает с установленной — обновления нет.
+    const available = latest !== app.getVersion();
+    return { available, version: available ? latest : undefined };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[polza] update check failed:", msg);
+    return { available: false };
+  }
+}
+
+/** Установить скачанное обновление и перезапустить. */
+export function quitAndInstall(): void {
+  autoUpdater.quitAndInstall();
+}
+
+/** Проверить, скачано ли обновление и готово к установке. */
+export function isUpdateDownloaded(): boolean {
+  return updateDownloaded;
+}

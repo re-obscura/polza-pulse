@@ -1,0 +1,318 @@
+/* Popup — главное окно приложения.
+   Растягивается на всю ширину Electron-окна, без пустых отступов. */
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+}
+
+.popup {
+  background: var(--bg);
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Когда открыто в отдельном окне (html.detached) — расширяем. */
+html.detached {
+  width: auto;
+  min-width: var(--popup-w);
+  height: 100%;
+}
+html.detached body,
+html.detached .popup {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Шапка */
+.popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.popup__logo {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  font-size: var(--fs-body);
+  color: var(--ink);
+}
+.popup__head-actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* ---- Лимит + прогноз ---- */
+.popup__balance-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.popup__source {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.popup__balance-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  flex-wrap: wrap;
+}
+.popup__balance-value {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Прогноз справа от баланса */
+.popup__forecast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-small);
+  text-align: right;
+  color: var(--ink-2);
+}
+.popup__forecast-text {
+  white-space: nowrap;
+}
+/* Цвет прогноза строго по дням: <3 — красный, 3–7 — жёлтый, 7+ — зелёный. */
+.popup__forecast[data-level="ok"] .popup__forecast-text,
+.popup__forecast[data-level="ok"] .dot {
+  color: var(--ok-ink);
+}
+.popup__forecast[data-level="ok"] .dot {
+  background: var(--ok);
+}
+.popup__forecast[data-level="warn"] .popup__forecast-text {
+  color: var(--warn);
+}
+.popup__forecast[data-level="warn"] .dot {
+  background: var(--warn);
+}
+.popup__forecast[data-level="alert"] .popup__forecast-text {
+  color: var(--alert-ink);
+}
+.popup__forecast[data-level="alert"] .dot {
+  background: var(--alert);
+}
+
+/* ---- График + тултип ---- */
+.popup__chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+.popup__chart-range {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+.spark-wrap {
+  position: relative;
+  width: 100%;
+  overflow: visible; /* тултип живёт над spark-wrap, не должен клипаться */
+}
+.sparkline {
+  display: block;
+  width: 100%;
+  height: 44px;
+  color: var(--ink);
+  cursor: crosshair;
+}
+.spark-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  /* Не используем translateX(-50%) — позиционируем вручную в JS с клипом */
+  background: var(--ink);
+  color: var(--bg);
+  font-size: var(--fs-micro);
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+.spark-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--ink);
+}
+.spark-tooltip b {
+  font-weight: var(--fw-semibold);
+}
+
+/* Топ модели (главная) + параметры (настройки) */
+.top-models {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.top-models li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--fs-small);
+}
+.top-models .model-name {
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.top-models .model-cost {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Параметры в настройках — одинаковые select, без обрезания текста */
+.top-models--settings li span {
+  font-size: var(--fs-body);
+  white-space: nowrap;
+}
+.top-models--settings .select {
+  width: 150px;
+  flex-shrink: 0;
+}
+
+/* Подвал */
+.popup__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.popup__updated {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+.popup__footer-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+.refresh-ico {
+  display: inline-block;
+}
+.refresh-ico.is-spinning {
+  animation: spin 0.7s linear infinite;
+}
+
+/* Ссылка на историю */
+.popup__history-link {
+  display: block;
+  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  border-top: var(--rule-w) solid var(--rule);
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.popup__history-link:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+.popup__actions {
+  padding: var(--space-4);
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+/* Баннер ошибки */
+.popup__error {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-micro);
+  color: var(--alert-ink);
+  background: color-mix(in srgb, var(--alert) 8%, var(--bg));
+  border-top: var(--rule-w) solid color-mix(in srgb, var(--alert) 30%, var(--rule));
+}
+
+.popup__body .empty {
+  padding: var(--space-8) var(--space-4);
+}
+
+/* ============================================================
+   Панель настроек — section-блоки как на главной.
+   ============================================================ */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  animation: settings-in 0.18s ease;
+}
+@keyframes settings-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings-panel { animation: none; }
+}
+
+/* Шапка */
+.settings-panel__head {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+
+/* Hint-параграфы */
+.s-hint {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+  line-height: 1.4;
+  margin: 0;
+  padding-top: var(--space-2);
+}
+
+/* Рефренсный паттерн из главной: .top-models li — строка с select */
+/* (стили .top-models, li, .model-name/.model-cost уже определены,
+   здесь они автоматически применяются к ul.top-models внутри настроек) */
+
+/* ---- Лимит расхода (прогресс-бар) ---- */
+.popup__limit {
+  margin-top: var(--space-3);
+}
+.popup__limit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-1);
+}
+.popup__limit-label {
+  font-size: var(--fs-micro);
+  color: var(--ink-2);
+}
+.popup__limit-value {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+
+/* ---- Ссылка «Все модели →» ---- */
+.popup__all-link {
+  font-size: var(--fs-micro);
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.popup__all-link:hover { color: var(--ink); }

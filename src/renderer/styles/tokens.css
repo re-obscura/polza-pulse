@@ -1,0 +1,125 @@
+/* ============================================================================
+   Polza Monitor — дизайн-токены
+   Эстетика Дитера Рамса / Braun: нейтральная палитра, цвет = только сигнал.
+   Светлая и тёмная темы через CSS custom properties + prefers-color-scheme.
+   ========================================================================== */
+
+:root {
+  /* ---- Типографика ---- */
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Consolas", ui-monospace, monospace;
+
+  /* ---- Шкала размеров ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* ---- Радиусы: сдержанные, как у приборных панелей Braun ---- */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* ---- Толщина границ: волосок ---- */
+  --rule-w: 1px;
+
+  /* ---- Размеры popup ---- */
+  --popup-w: 360px;
+
+  /* ---- Сигнальные цвета (одинаковые в обеих темах) ---- */
+  /* Цвет имеет смысл только там, где он что-то сообщает (Рамс: честный). */
+  --ok: #5c8a3a; /* баланс ок / зелёный */
+  --ok-ink: #4a722e;
+  --warn: #c88a2e; /* внимание / хватит < 7 дней / янтарь */
+  --alert: #d4502a; /* порог / превышение / Braun-красный */
+  --alert-ink: #b03e1f;
+
+  /* ---- Типографическая шкала ---- */
+  --fs-display: 30px; /* крупный баланс в popup */
+  --fs-h1: 20px;
+  --fs-h2: 16px;
+  --fs-body: 13px;
+  --fs-small: 12px;
+  --fs-micro: 11px;
+
+  --lh-tight: 1.15;
+  --lh-base: 1.45;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+}
+
+/* ---- Светлая тема (по умолчанию, тёплый офф-вайт как Braun T-series) ---- */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f3ee; /* тёплый офф-вайт */
+  --surface: #ffffff;
+  --surface-2: #faf9f5; /* едва приподнятая поверхность */
+  --ink: #1a1a1a; /* антрацит */
+  --ink-2: #6b6b6b; /* вторичный текст */
+  --ink-3: #9a968c; /* третичный / placeholder */
+  --rule: #e0ddd6; /* границы */
+  --rule-strong: #cdc9c0;
+  --accent: #1a1a1a; /* «действие» — нейтральное, не цветной */
+  --accent-ink: #ffffff;
+  --shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
+}
+
+/* ---- Тёмная тема ---- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #161616;
+  --surface: #232323;
+  --surface-2: #2a2a2a;
+  --ink: #f0ede6;
+  --ink-2: #9a968c;
+  --ink-3: #6b6862;
+  --rule: #2e2e2e;
+  --rule-strong: #3a3a3a;
+  --accent: #f0ede6;
+  --accent-ink: #161616;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Системная тема: выбираем по prefers-color-scheme, если data-theme="system".
+   Реальная установка data-theme выполняется в ui/theme.ts. */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    color-scheme: dark;
+    --bg: #161616;
+    --surface: #232323;
+    --surface-2: #2a2a2a;
+    --ink: #f0ede6;
+    --ink-2: #9a968c;
+    --ink-3: #6b6862;
+    --rule: #2e2e2e;
+    --rule-strong: #3a3a3a;
+    --accent: #f0ede6;
+    --accent-ink: #161616;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface-2: #faf9f5;
+    --ink: #1a1a1a;
+    --ink-2: #6b6b6b;
+    --ink-3: #9a968c;
+    --rule: #e0ddd6;
+    --rule-strong: #cdc9c0;
+    --accent: #1a1a1a;
+    --accent-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
+  }
+}
