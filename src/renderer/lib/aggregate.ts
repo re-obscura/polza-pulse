@@ -11,9 +11,21 @@ import type {
   GenerationRaw,
   HourSpend,
   ModelStat,
+  Usage,
 } from "../../types";
 import { numberOr } from "./polzaClient";
 import { toDayKey } from "./format";
+
+/** Нормализовать usage из snake_case (API Polza) → camelCase. */
+function normalizeUsage(raw: unknown): Usage | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const u = raw as Record<string, unknown>;
+  return {
+    promptTokens: numberOr(u.prompt_tokens ?? u.promptTokens, 0),
+    completionTokens: numberOr(u.completion_tokens ?? u.completionTokens, 0),
+    totalTokens: numberOr(u.total_tokens ?? u.totalTokens, 0),
+  };
+}
 
 /** Нормализовать одну «сырую» генерацию в доменную (с числовым cost и day). */
 export function normalizeGeneration(raw: GenerationRaw): Generation | null {
@@ -35,7 +47,7 @@ export function normalizeGeneration(raw: GenerationRaw): Generation | null {
     requestType: typeof raw.requestType === "string" ? raw.requestType : "chat",
     status: typeof raw.status === "string" ? raw.status : "unknown",
     cost,
-    usage: raw.usage,
+    usage: normalizeUsage(raw.usage),
     createdAt,
     day: toDayKey(createdAt),
     provider: typeof raw.provider === "string" ? raw.provider : undefined,

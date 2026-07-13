@@ -39,6 +39,9 @@ desktop.ini
 # ZCode
 .zcode/
 
+# Инструкция по сборке и релизу (только локально)
+RELEASE.md
+
 # Система macOS
 *.dmg
 
