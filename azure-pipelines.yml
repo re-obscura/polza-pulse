@@ -1,11 +1,8 @@
 # Azure DevOps Pipeline для сборки Polza Pulse.
 # Триггер: тег v* (например, v1.0.11).
-# Собирает .exe-инсталлятор через electron-builder, публикует артефакты:
-#   - Polza Pulse Setup X.Y.Z.exe
-#   - latest.yml
-#   - Polza Pulse Setup X.Y.Z.exe.blockmap
-# Эти файлы нужно скопировать на IIS (https://s-tfs.intellectika.ru/polza-updates/)
-# для работы автообновления через GenericProvider + NTLM.
+# Собирает .exe-инсталлятор через electron-builder и пушит артефакты
+# (latest.yml + .exe + .blockmap) в orphan-ветку releases.
+# Приложение качает обновления из этой ветки через REST API (NTLM).
 
 trigger:
   tags:
@@ -18,6 +15,9 @@ pool:
     - agent.os -equals Windows_NT
 
 steps:
+  - checkout: self
+    persistCredentials: true
+
   - task: NodeTool@0
     inputs:
       versionSpec: "20.x"
@@ -29,30 +29,28 @@ steps:
   - script: npm run dist
     displayName: "Сборка .exe + latest.yml (electron-builder)"
 
-  # Копирование артефактов на IIS-сервер обновлений.
-  # Сервер: s-tfs.intellectika.local (192.168.244.147)
-  # Путь: \\s-tfs.intellectika.local\C$\inetpub\polza-updates\
-  # Требуется: чтобы build-агент имел сетевой доступ к серверу.
+  # Пуш артефактов в orphan-ветку releases.
   - powershell: |
+      $tag = "$(Build.SourceBranchName)"
+      Write-Host "[deploy] tag: $tag"
+
+      git config user.email "pipeline@polza.ai"
+      git config user.name "Azure Pipeline"
+
+      # Пересоздаём orphan-ветку releases (без общей истории с main)
+      git checkout --orphan releases 2>$null
+
+      # Удаляем всё из рабочей директории, оставляем только артефакты
+      git rm -rf . 2>$null
+
+      # Копируем артефакты сборки из release/
       $source = "$(Build.SourcesDirectory)\release"
-      $dest   = "\\s-tfs.intellectika.local\C$\inetpub\polza-updates"
-
-      # Копируем все файлы: *.exe, *.blockmap, latest.yml, builder-debug.yml
-      Write-Host "[deploy] source: $source"
-      Write-Host "[deploy] dest:   $dest"
-      robocopy $source $dest /NP /NFL /NDL /NJH /NJS
-      # robocopy exit code 0..7 = success (1 = copied, 2 = extra, etc.)
-      $rc = $LASTEXITCODE
-      if ($rc -ge 8) {
-        Write-Error "[deploy] robocopy failed with exit code $rc"
-        exit 1
+      Get-ChildItem "$source\*" -Include *.exe, *.yml, *.blockmap | ForEach-Object {
+        Copy-Item $_.FullName ./ -Force
+        Write-Host "[deploy] copied: $($_.Name)"
       }
-      Write-Host "[deploy] done (robocopy exit $rc)"
-    displayName: "Деплой на IIS (polza-updates)"
 
-  # Артефакты — для ручной загрузки, если деплой не настроен.
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: "$(Build.SourcesDirectory)/release"
-      artifactName: "polza-pulse-release"
-    displayName: "Публикация артефактов сборки"
+      git add .
+      git commit -m "Release $tag"
+      git push origin releases --force
+    displayName: "Push to releases branch"

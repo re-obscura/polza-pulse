@@ -75,7 +75,7 @@ const builds = [
     outdir: outMain,
     format: "cjs",
     platform: "node",
-    external: ["electron", "electron-store", "electron-updater"],
+    external: ["electron", "electron-store"],
   },
   // Preload (CJS)
   {
