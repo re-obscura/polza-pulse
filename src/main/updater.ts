@@ -276,9 +276,9 @@ export function quitAndInstall(): void {
     return;
   }
 
-  // Запускаем установщик с флагом /S (silent) и закрываем приложение.
-  // NSIS с perMachine=false установит в профиль текущего пользователя.
-  spawn(installerPath, ["/S"], {
+  // Запускаем установщик без /S — NSIS сам закроет приложение и заменит файлы.
+  // При perMachine=false установка идёт в профиль текущего пользователя без UAC.
+  spawn(installerPath, [], {
     detached: true,
     stdio: "ignore",
   }).unref();
