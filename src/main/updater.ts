@@ -1,26 +1,40 @@
 /* ============================================================================
-   updater.ts — автообновление через electron-updater.
-   GitHub Releases: electron-updater тянет latest.yml + .exe из публичного
-   репозитория анонимно. Проверка при каждом запуске + по запросу из настроек.
+   updater.ts — автообновление через electron-updater (GenericProvider + NTLM).
+
+   Артефакты (latest.yml + .exe) раздаются через IIS-виртуальный каталог
+   на Azure DevOps Server. Доступ — NTLM (Windows-аутентификация текущего
+   пользователя через SSPI). Chromium-флаги для Negotiate заданы в index.ts.
    ========================================================================== */
 
 import { autoUpdater } from "electron-updater";
 import { Notification, app } from "electron";
 import type { UpdateInfo } from "../types";
 
+/** Базовый URL, откуда качаются обновления.
+ *  Это IIS-виртуальный каталог (или папка) с latest.yml + .exe.
+ *  NTLM-аутентификация — через текущего пользователя Windows. */
+const UPDATE_FEED_URL =
+  "https://s-tfs.intellectika.ru/polza-updates/";
+
 let initialized = false;
 let updateDownloaded = false;
 
-/** Инициализация: настройка поведения и подписки на события. */
+/** Инициализация: настройка поведения, NTLM-обработчик, подписки на события. */
 export function initUpdater(): void {
   if (initialized) return;
   initialized = true;
 
-  // Явно указываем GitHub-релизы, чтобы не зависеть от метаданных сборки.
+  // GenericProvider: качает latest.yml и .exe с любого HTTP-сервера.
   autoUpdater.setFeedURL({
-    provider: "github",
-    owner: "re-obscura",
-    repo: "polza-pulse",
+    provider: "generic",
+    url: UPDATE_FEED_URL,
+  });
+
+  // NTLM-обработчик: когда сервер отвечает 401 + WWW-Authenticate: Negotiate,
+  // Chromium (Electron) через SSPI делает handshake от имени текущего
+  // пользователя Windows. Пустые credentials = "использовать учётку Windows".
+  autoUpdater.on("login", (_authInfo, callback) => {
+    callback("", "");
   });
 
   // В dev-режиме electron-updater не работает — отключаем лишний шум.
@@ -78,7 +92,7 @@ export async function checkForUpdates(): Promise<UpdateInfo> {
       return { available: false };
     }
     const latest = result.updateInfo.version;
-    // Если версия из релиза совпадает с установленной — обновления нет.
+    // Если версия из latest.yml совпадает с установленной — обновления нет.
     const available = latest !== app.getVersion();
     return { available, version: available ? latest : undefined };
   } catch (e) {

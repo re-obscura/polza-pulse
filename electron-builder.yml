@@ -32,12 +32,8 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: Polza Pulse
 
-# Автообновление: GitHub Releases.
-# electron-builder публикует артефакты сборки в GitHub Releases.
-# Для публикации нужен GH_TOKEN (или GITHUB_TOKEN в Actions) с правами repo.
-# electron-updater в рантайме тянет latest.yml и .exe анонимно (публичный репо).
-publish:
-  provider: github
-  owner: re-obscura
-  repo: polza-pulse
-  releaseType: release
+# Автообновление: IIS-виртуальный каталог с NTLM (Windows-аутентификация).
+# Файлы latest.yml, .exe и .blockmap раздаются через IIS на Azure DevOps Server:
+#   https://s-tfs.intellectika.ru/polza-updates/
+# Публикация — вручную или через azure-pipelines.yml.
+# electron-builder publish здесь не используется — артефакты копируются отдельно.

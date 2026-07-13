@@ -21,6 +21,11 @@ import { registerIpc } from "./ipc";
 import { getCache } from "./store";
 import type { ThemePref } from "../types";
 
+// NTLM-флаги Chromium для Windows-аутентификации на Azure DevOps Server.
+// Должны быть установлены до app.whenReady().
+app.commandLine.appendSwitch("auth-server-whitelist", "*s-tfs.intellectika.ru*");
+app.commandLine.appendSwitch("auth-negotiate-delegate-whitelist", "*s-tfs.intellectika.ru*");
+
 let mainWindow: BrowserWindow | null = null;
 let isQuitting = false;
 

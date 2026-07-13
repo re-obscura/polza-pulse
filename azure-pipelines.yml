@@ -1,0 +1,37 @@
+# Azure DevOps Pipeline для сборки Polza Pulse.
+# Триггер: тег v* (например, v1.0.11).
+# Собирает .exe-инсталлятор через electron-builder, публикует артефакты:
+#   - Polza Pulse Setup X.Y.Z.exe
+#   - latest.yml
+#   - Polza Pulse Setup X.Y.Z.exe.blockmap
+# Эти файлы нужно скопировать на IIS (https://s-tfs.intellectika.ru/polza-updates/)
+# для работы автообновления через GenericProvider + NTLM.
+
+trigger:
+  tags:
+    include:
+      - "v*"
+
+pool:
+  name: Default
+  demands:
+    - agent.os -equals Windows_NT
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "20.x"
+    displayName: "Установка Node.js 20"
+
+  - script: npm ci
+    displayName: "Установка зависимостей"
+
+  - script: npm run dist
+    displayName: "Сборка .exe + latest.yml (electron-builder)"
+
+  # Публикация артефактов: всё содержимое папки release/
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: "$(Build.SourcesDirectory)/release"
+      artifactName: "polza-pulse-release"
+    displayName: "Публикация артефактов сборки"
