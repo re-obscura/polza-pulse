@@ -4,7 +4,7 @@
    Закрытие окна (×) → скрытие в трей; выход — только через меню.
    ========================================================================== */
 
-import { Tray, Menu, nativeImage, type BrowserWindow } from "electron";
+import { Tray, Menu, nativeImage, app, type BrowserWindow } from "electron";
 import { join } from "node:path";
 import { getSettings } from "./store";
 import type { KeyCache } from "../types";
@@ -24,7 +24,7 @@ export function createTray(
   icon.setTemplateImage(false); // не инвертируем (цветная/монохром по нашему выбору)
 
   tray = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon);
-  tray.setToolTip("polza-pulse");
+  tray.setToolTip(`polza-pulse v${app.getVersion()}`);
 
   const menu = Menu.buildFromTemplate([
     {
@@ -65,7 +65,7 @@ export function createTray(
 export function updateTrayStatus(cache: KeyCache | null): void {
   if (!tray) return;
   if (!cache || !cache.aggregate) {
-    tray.setToolTip("polza-pulse");
+    tray.setToolTip(`polza-pulse v${app.getVersion()}`);
     return;
   }
   const settings = getSettings();
@@ -79,7 +79,7 @@ export function updateTrayStatus(cache: KeyCache | null): void {
   else if (pct >= 75) levelText = "близко к лимиту";
 
   tray.setToolTip(
-    `polza-pulse${levelText ? " — " + levelText : ""}\n` +
+    `polza-pulse v${app.getVersion()}${levelText ? " — " + levelText : ""}\n` +
       `сегодня ${formatRubShort(spentToday)}, ${pct}% лимита, за 7 дней ${formatRubShort(cache.aggregate.spend7d)}`
   );
 }
