@@ -1,8 +1,8 @@
-version: 1.0.15
+version: 1.0.16
 files:
-  - url: Polza Pulse Setup 1.0.15.exe
-    sha512: XQcdlOWiN8sWoVAf6XCf5D3fg+pC8Aa0VXZCc1NLYnoEt6T7Ksk7rrksV1akTOq0Y2F//7xluxXprocgS6r/4g==
-    size: 78719733
-path: Polza Pulse Setup 1.0.15.exe
-sha512: XQcdlOWiN8sWoVAf6XCf5D3fg+pC8Aa0VXZCc1NLYnoEt6T7Ksk7rrksV1akTOq0Y2F//7xluxXprocgS6r/4g==
-releaseDate: '2026-07-13T14:33:30.472Z'
+  - url: Polza Pulse Setup 1.0.16.exe
+    sha512: Y6eNgxkRux3mFaIgK0Bl3YDQC/IK5q5mvswzkTkpSuZzJIwymuZyVd3zepvl+7cyfx5a0fOrXQ8bpdzIfSgeCQ==
+    size: 78719904
+path: Polza Pulse Setup 1.0.16.exe
+sha512: Y6eNgxkRux3mFaIgK0Bl3YDQC/IK5q5mvswzkTkpSuZzJIwymuZyVd3zepvl+7cyfx5a0fOrXQ8bpdzIfSgeCQ==
+releaseDate: '2026-07-13T15:08:24.799Z'

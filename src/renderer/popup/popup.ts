@@ -435,10 +435,6 @@ function bindEvents(): void {
     await setTheme(next);
   });
 
-  $<HTMLButtonElement>("btn-topup").addEventListener("click", () => {
-    void window.polza.openExternal("https://polza.ai");
-  });
-
   $<HTMLAnchorElement>("btn-history").addEventListener("click", (e) => {
     e.preventDefault();
     void window.polza.openWindow("history");
