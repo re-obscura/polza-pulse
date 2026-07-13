@@ -49,7 +49,6 @@ const refreshIco = btnRefresh.querySelector<HTMLElement>(".refresh-ico")!;
 const optLimit = $<HTMLInputElement>("opt-limit");
 const optInterval = $<HTMLSelectElement>("opt-interval");
 const optBadge = $<HTMLSelectElement>("opt-badge");
-const optTheme = $<HTMLSelectElement>("opt-theme");
 const optBaseUrl = $<HTMLInputElement>("opt-baseurl");
 const keyForm = $<HTMLFormElement>("key-form");
 const keyValueInput = $<HTMLInputElement>("key-value");
@@ -329,7 +328,6 @@ async function loadSettingsUI(): Promise<void> {
   optLimit.value = String(s.spendLimit);
   optInterval.value = String(s.pollIntervalMin);
   optBadge.value = s.badgeMode;
-  optTheme.value = s.theme;
   optBaseUrl.value = s.baseUrl;
   const key = await window.polza.getKey();
   keyValueInput.value = key?.value ?? "";
@@ -342,7 +340,6 @@ async function saveSettingsFromUI(): Promise<void> {
     pollIntervalMin: Number(optInterval.value) || 5,
     spendLimit: Number(optLimit.value) || 0,
     badgeMode: optBadge.value === "spendToday" ? "spendToday" : "balance",
-    theme: optTheme.value as Settings["theme"],
     baseUrl: optBaseUrl.value.trim() || "https://polza.ai/api/v1",
   };
   await window.polza.setSettings(patch);
@@ -422,7 +419,7 @@ function bindEvents(): void {
     showSettings(true);
   });
 
-  [optLimit, optInterval, optBadge, optBaseUrl, optTheme].forEach(
+  [optLimit, optInterval, optBadge, optBaseUrl].forEach(
     (el) => el.addEventListener("change", () => void saveSettingsFromUI())
   );
 
@@ -436,7 +433,6 @@ function bindEvents(): void {
     // Переключаем на противоположную — гарантированно видимое изменение.
     const next: ThemePref = effective === "dark" ? "light" : "dark";
     await setTheme(next);
-    optTheme.value = next;
   });
 
   $<HTMLButtonElement>("btn-topup").addEventListener("click", () => {

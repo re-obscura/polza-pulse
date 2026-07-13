@@ -93,10 +93,8 @@ export function drawSparkline(
     ctx.beginPath();
     for (let i = 0; i < gridLines; i++) {
       const gx = xAt(n === 1 ? 0 : (i / (gridLines - 1)) * (n - 1));
-      // Рисуем каждую 7-ю линию чуть заметнее (недельные границы).
-      ctx.strokeStyle = (i % 7 === 0)
-        ? withAlpha(color, 0.18)
-        : withAlpha(color, 0.07);
+      // Все линии одного цвета.
+      ctx.strokeStyle = withAlpha(color, 0.18);
       ctx.lineWidth = 0.5;
       ctx.moveTo(gx, pad);
       ctx.lineTo(gx, pad + innerH);
