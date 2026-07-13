@@ -40,3 +40,4 @@ publish:
   provider: github
   owner: re-obscura
   repo: polza-pulse
+  releaseType: release
