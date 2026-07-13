@@ -9,6 +9,7 @@ import { Notification } from "electron";
 import type { UpdateInfo } from "../types";
 
 let initialized = false;
+let updateDownloaded = false;
 
 /** Инициализация: настройка поведения и подписки на события. */
 export function initUpdater(): void {
@@ -29,8 +30,6 @@ export function initUpdater(): void {
   // явно при выходе через меню трея, если обновление скачано.
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = false;
-
-  let updateDownloaded = false;
 
   autoUpdater.on("update-available", (info) => {
     console.log("[polza] update available:", info.version);
