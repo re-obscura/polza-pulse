@@ -180,8 +180,8 @@ function downloadInstaller(
 
 /** Проверить обновления при запуске (тихо, в фоне). */
 export async function checkOnStartup(): Promise<void> {
-  // В dev-режиме обновления не работают.
-  if (!app.isPackaged) return;
+  // В dev-режиме и не на Windows обновления не работают.
+  if (!app.isPackaged || process.platform !== "win32") return;
 
   try {
     const latest = await fetchLatestYml();
@@ -218,7 +218,7 @@ export async function checkOnStartup(): Promise<void> {
 
 /** Проверить обновления по запросу из настроек. */
 export async function checkForUpdates(): Promise<UpdateInfo> {
-  if (!app.isPackaged) {
+  if (!app.isPackaged || process.platform !== "win32") {
     return { available: false };
   }
 

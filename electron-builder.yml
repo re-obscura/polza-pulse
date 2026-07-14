@@ -20,7 +20,8 @@ files:
 # Без code signing — внутреннее корпоративное приложение.
 forceCodeSigning: false
 
-# Иконка приложения (минимум 256x256 .ico или .png) — для установщика и окна.
+# Иконка приложения (минимум 256x256) — для установщика и окна.
+# electron-builder сам конвертит .png в .ico (Windows) и .icns (macOS).
 win:
   icon: icons/logo-dark-256.png
   target:
@@ -31,6 +32,15 @@ win:
   signingHashAlgorithms: null
   certificateFile: null
   certificatePassword: null
+
+mac:
+  icon: icons/logo-dark-256.png
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  category: public.app-category.utilities
+  # Без подписи — для внутреннего использования.
+  identity: null
 
 nsis:
   oneClick: false

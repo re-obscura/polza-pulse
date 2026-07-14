@@ -20,8 +20,8 @@ export function createTray(
 ): Tray {
   const iconPath = join(__dirname, "..", "icons", "logo-dark-32.png");
   const icon = nativeImage.createFromPath(iconPath);
-  // Windows: маленькая иконка 16-32px лучше всего смотрится в трее.
-  icon.setTemplateImage(false); // не инвертируем (цветная/монохром по нашему выбору)
+  // Windows: цветная иконка; macOS: template (авто-инверсия под тему).
+  icon.setTemplateImage(process.platform === "darwin");
 
   tray = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon);
   tray.setToolTip(`polza-pulse v${app.getVersion()}`);
