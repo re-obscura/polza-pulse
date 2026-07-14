@@ -18,7 +18,7 @@ export function createTray(
   onRefresh: () => void,
   onQuit: () => void
 ): Tray {
-  const iconPath = join(__dirname, "..", "icons", "icon-32.png");
+  const iconPath = join(__dirname, "..", "icons", "logo-dark-32.png");
   const icon = nativeImage.createFromPath(iconPath);
   // Windows: маленькая иконка 16-32px лучше всего смотрится в трее.
   icon.setTemplateImage(false); // не инвертируем (цветная/монохром по нашему выбору)

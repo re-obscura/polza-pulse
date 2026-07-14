@@ -51,10 +51,12 @@ function applyThemeToNative(pref: ThemePref): void {
 
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
-    width: 420,
-    height: 740,
-    minWidth: 380,
-    minHeight: 480,
+    width: 440,
+    height: 700,
+    minWidth: 440,
+    minHeight: 700,
+    maxHeight: 700,
+    maxWidth: 500,
     show: false, // показываем после ready-to-show
     frame: true,
     resizable: true,

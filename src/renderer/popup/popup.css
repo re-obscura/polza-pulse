@@ -42,12 +42,6 @@ html.detached .popup {
   padding: var(--space-3) var(--space-4);
   border-bottom: var(--rule-w) solid var(--rule);
 }
-.popup__logo {
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.04em;
-  font-size: var(--fs-body);
-  color: var(--ink);
-}
 .popup__head-actions {
   display: flex;
   gap: var(--space-1);
@@ -328,7 +322,6 @@ html.detached .popup {
 /* ---- Поиск моделей в шапке ---- */
 .popup__search-wrap {
   flex: 1 1 auto;
-  max-width: 200px;
   position: relative;
 }
 .popup__search {
