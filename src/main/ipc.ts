@@ -51,6 +51,15 @@ export function registerIpc(): void {
     return true;
   });
 
+  // ---- Автозапуск ----
+  ipcMain.handle("AUTOSTART_GET", () => {
+    return app.getLoginItemSettings().openAtLogin;
+  });
+  ipcMain.handle("AUTOSTART_SET", (_e, enabled: boolean) => {
+    app.setLoginItemSettings({ openAtLogin: enabled });
+    return app.getLoginItemSettings().openAtLogin;
+  });
+
   // ---- Версия ----
   ipcMain.handle("GET_VERSION", () => app.getVersion());
 

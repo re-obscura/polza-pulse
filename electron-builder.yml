@@ -22,7 +22,7 @@ forceCodeSigning: false
 
 # Иконка приложения (минимум 256x256 .ico или .png) — для установщика и окна.
 win:
-  icon: icons/icon-256.png
+  icon: icons/logo-dark-256.png
   target:
     - target: nsis
       arch: [x64]

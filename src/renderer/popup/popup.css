@@ -407,6 +407,15 @@ html.detached .popup {
 .model-result-price {
   font-variant-numeric: tabular-nums;
 }
+
+/* Чекбокс автозапуска */
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+}
 .model-result-toast {
   position: absolute;
   top: calc(100% + 4px);

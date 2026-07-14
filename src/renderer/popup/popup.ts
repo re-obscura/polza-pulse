@@ -50,6 +50,7 @@ const refreshIco = btnRefresh.querySelector<HTMLElement>(".refresh-ico")!;
 const optLimit = $<HTMLInputElement>("opt-limit");
 const optInterval = $<HTMLSelectElement>("opt-interval");
 const optBaseUrl = $<HTMLInputElement>("opt-baseurl");
+const optAutostart = $<HTMLInputElement>("opt-autostart");
 const keyForm = $<HTMLFormElement>("key-form");
 const keyValueInput = $<HTMLInputElement>("key-value");
 const keySaveBtn = $<HTMLButtonElement>("key-save-btn");
@@ -423,6 +424,7 @@ async function loadSettingsUI(): Promise<void> {
   optLimit.value = String(s.spendLimit);
   optInterval.value = String(s.pollIntervalMin);
   optBaseUrl.value = s.baseUrl;
+  optAutostart.checked = await window.polza.getAutostart();
   const key = await window.polza.getKey();
   keyValueInput.value = key?.value ?? "";
   // Подтягиваем реальную версию из package.json → app.getVersion()
@@ -516,6 +518,10 @@ function bindEvents(): void {
   [optLimit, optInterval, optBaseUrl].forEach(
     (el) => el.addEventListener("change", () => void saveSettingsFromUI())
   );
+
+  optAutostart.addEventListener("change", async () => {
+    await window.polza.setAutostart(optAutostart.checked);
+  });
 
   keyForm.addEventListener("submit", (e) => void onSaveKey(e));
 

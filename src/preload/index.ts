@@ -33,6 +33,11 @@ const polza = {
   checkForUpdates: (): Promise<UpdateInfo> => ipcRenderer.invoke("CHECK_UPDATES"),
   installUpdate: (): Promise<boolean> => ipcRenderer.invoke("INSTALL_UPDATE"),
 
+  // ---- Автозапуск ----
+  getAutostart: (): Promise<boolean> => ipcRenderer.invoke("AUTOSTART_GET"),
+  setAutostart: (enabled: boolean): Promise<boolean> =>
+    ipcRenderer.invoke("AUTOSTART_SET", enabled),
+
   // ---- Версия ----
   getVersion: (): Promise<string> => ipcRenderer.invoke("GET_VERSION"),
 
