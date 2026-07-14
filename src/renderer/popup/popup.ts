@@ -12,9 +12,10 @@ import {
   formatRub,
   formatRubShort,
   formatDateShort,
+  formatInt,
 } from "../lib/format";
 import { PolzaClient, isAuthError } from "../lib/polzaClient";
-import type { KeyCache, Key, Settings, ThemePref } from "../../types";
+import type { KeyCache, Key, ModelInfo, Settings, ThemePref } from "../../types";
 
 /* ---- DOM ---- */
 
@@ -48,14 +49,108 @@ const refreshIco = btnRefresh.querySelector<HTMLElement>(".refresh-ico")!;
 // Настройки
 const optLimit = $<HTMLInputElement>("opt-limit");
 const optInterval = $<HTMLSelectElement>("opt-interval");
-const optBadge = $<HTMLSelectElement>("opt-badge");
 const optBaseUrl = $<HTMLInputElement>("opt-baseurl");
 const keyForm = $<HTMLFormElement>("key-form");
 const keyValueInput = $<HTMLInputElement>("key-value");
 const keySaveBtn = $<HTMLButtonElement>("key-save-btn");
 const keyHint = $<HTMLParagraphElement>("key-hint");
 
+// Поиск моделей
+const modelSearch = $<HTMLInputElement>("model-search");
+const modelResults = $<HTMLDivElement>("model-results");
+const modelSearchWrap = $<HTMLDivElement>("model-search-wrap");
+
 let chartSeries: { day: string; value: number }[] = [];
+let modelsCache: ModelInfo[] | null = null;
+let searchDebounce: ReturnType<typeof setTimeout> | null = null;
+
+/* ---- Поиск моделей ---- */
+
+function priceStr(pricing: Record<string, unknown> | undefined): string {
+  if (!pricing) return "";
+  const p = numberOr(pricing.prompt_per_million ?? pricing.prompt, 0);
+  const c = numberOr(pricing.completion_per_million ?? pricing.completion, 0);
+  const parts: string[] = [];
+  // Цены в API — за 1M токенов, показываем как есть.
+  if (p > 0) parts.push(`${formatRubShort(p)} / M tok`);
+  if (c > 0 && c !== p) parts.push(`${formatRubShort(c)} / M tok out`);
+  return parts.join(" · ");
+}
+
+async function searchModels(q: string): Promise<void> {
+  const lower = q.toLowerCase();
+  // Загружаем модели один раз и кешируем.
+  if (!modelsCache) {
+    try {
+      modelsCache = (await window.polza.fetchModels()) ?? [];
+    } catch {
+      modelResults.innerHTML = `<div class="model-result-item" style="color:var(--alert-ink)">Ошибка загрузки</div>`;
+      modelResults.hidden = false;
+      return;
+    }
+  }
+  const filtered = modelsCache.filter(
+    (m) => m.id.toLowerCase().includes(lower) || m.name.toLowerCase().includes(lower)
+  ).slice(0, 10);
+
+  if (filtered.length === 0) {
+    modelResults.innerHTML = `<div class="model-result-item" style="color:var(--ink-3)">Ничего не найдено</div>`;
+  } else {
+    modelResults.innerHTML = filtered.map((m) => {
+      const type = m.type ?? "";
+      const ctx = m.context_length ?? m.top_provider?.context_length;
+      const ctxStr = ctx ? `${formatInt(ctx)} ток.` : "";
+      const price = priceStr(m.top_provider?.pricing as Record<string, unknown> | undefined);
+      return `<div class="model-result-item" data-id="${escapeHtml(m.id)}">
+        <div class="model-result-id">${escapeHtml(m.id)}</div>
+        <div class="model-result-meta">
+          ${type ? `<span class="model-result-type model-result-type--${escapeHtml(type)}">${escapeHtml(type)}</span>` : ""}
+          ${ctxStr ? `<span>${ctxStr}</span>` : ""}
+          ${price ? `<span class="model-result-price">${escapeHtml(price)}</span>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+  }
+  modelResults.hidden = false;
+
+  // Клик по строке → копировать ID.
+  modelResults.querySelectorAll(".model-result-item[data-id]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const id = (el as HTMLElement).dataset.id!;
+      void copyModelId(id);
+    });
+  });
+}
+
+async function copyModelId(id: string): Promise<void> {
+  await navigator.clipboard.writeText(id);
+  // Мини-уведомление (toast)
+  let toast = modelSearchWrap.querySelector<HTMLDivElement>(".model-result-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "model-result-toast";
+    modelSearchWrap.appendChild(toast);
+  }
+  toast.textContent = `Скопировано: ${id}`;
+  toast.hidden = false;
+  setTimeout(() => { toast.hidden = true; }, 1800);
+  closeModelResults();
+}
+
+function closeModelResults(): void {
+  modelResults.hidden = true;
+  modelResults.innerHTML = "";
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function numberOr(v: unknown, fallback: number): number {
+  if (typeof v === "number") return isNaN(v) ? fallback : v;
+  if (typeof v === "string") { const n = Number(v); return isNaN(n) ? fallback : n; }
+  return fallback;
+}
 
 /* ---- Жизненный цикл ---- */
 
@@ -327,7 +422,6 @@ async function loadSettingsUI(): Promise<void> {
   const s = await window.polza.getSettings();
   optLimit.value = String(s.spendLimit);
   optInterval.value = String(s.pollIntervalMin);
-  optBadge.value = s.badgeMode;
   optBaseUrl.value = s.baseUrl;
   const key = await window.polza.getKey();
   keyValueInput.value = key?.value ?? "";
@@ -339,7 +433,7 @@ async function saveSettingsFromUI(): Promise<void> {
   const patch: Partial<Settings> = {
     pollIntervalMin: Number(optInterval.value) || 5,
     spendLimit: Number(optLimit.value) || 0,
-    badgeMode: optBadge.value === "spendToday" ? "spendToday" : "balance",
+    badgeMode: "spendToday",
     baseUrl: optBaseUrl.value.trim() || "https://polza.ai/api/v1",
   };
   await window.polza.setSettings(patch);
@@ -419,7 +513,7 @@ function bindEvents(): void {
     showSettings(true);
   });
 
-  [optLimit, optInterval, optBadge, optBaseUrl].forEach(
+  [optLimit, optInterval, optBaseUrl].forEach(
     (el) => el.addEventListener("change", () => void saveSettingsFromUI())
   );
 
@@ -480,6 +574,29 @@ function bindEvents(): void {
   });
   window.polza.onSettingsChanged(() => {
     void loadSettingsUI();
+  });
+
+  // ---- Поиск моделей ----
+  modelSearch.addEventListener("input", () => {
+    const q = modelSearch.value.trim();
+    if (!q) {
+      closeModelResults();
+      return;
+    }
+    if (searchDebounce) clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => void searchModels(q), 300);
+  });
+
+  modelSearch.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeModelResults(); modelSearch.blur(); }
+  });
+
+  // Закрываем дропдаун при клике вне поля поиска и результатов.
+  document.addEventListener("click", (e) => {
+    const target = e.target as Node;
+    if (!modelSearchWrap.contains(target) && !modelResults.contains(target)) {
+      closeModelResults();
+    }
   });
 }
 

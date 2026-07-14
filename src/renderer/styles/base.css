@@ -93,6 +93,22 @@ hr,
   color: var(--bg);
 }
 
+/* Тонкий кастомный скроллбар вместо широкого системного */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3);
+}
+
 /* Контейнер для страниц настроек/истории (не popup). */
 .page {
   max-width: 880px;

@@ -7,6 +7,7 @@ import { contextBridge, ipcRenderer } from "electron";
 import type {
   Key,
   KeyCache,
+  ModelInfo,
   Settings,
   UpdateInfo,
 } from "../types";
@@ -40,6 +41,9 @@ const polza = {
     ipcRenderer.invoke("OPEN_EXTERNAL", url),
   openWindow: (name: "history" | "models"): Promise<boolean> =>
     ipcRenderer.invoke("OPEN_WINDOW", name),
+
+  // ---- Модели ----
+  fetchModels: (): Promise<ModelInfo[]> => ipcRenderer.invoke("FETCH_MODELS"),
 
   // ---- События main → renderer ----
   onCacheChanged: (cb: () => void): (() => void) => {

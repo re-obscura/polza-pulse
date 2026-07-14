@@ -255,3 +255,29 @@ export interface UpdateInfo {
   version?: string;
   downloaded?: boolean;
 }
+
+/* --------------------------------------------------------------------------
+   Модели (GET /v1/models)
+   -------------------------------------------------------------------------- */
+
+/** Ценообразование модели (RUB). */
+export interface ModelPricing {
+  prompt_per_million?: number | string;
+  completion_per_million?: number | string;
+  currency?: string;
+  [k: string]: unknown;
+}
+
+/** Модель из GET /v1/models. */
+export interface ModelInfo {
+  id: string;
+  name: string;
+  type?: string;
+  context_length?: number;
+  top_provider?: {
+    is_moderated?: boolean;
+    context_length?: number;
+    pricing?: ModelPricing;
+  };
+  short_description?: string;
+}

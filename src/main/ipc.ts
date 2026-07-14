@@ -60,6 +60,16 @@ export function registerIpc(): void {
     return true;
   });
 
+  // ---- Модели ----
+  ipcMain.handle("FETCH_MODELS", async () => {
+    const settings = getSettings();
+    const url = `${settings.baseUrl}/models`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!res.ok) return [];
+    const json = (await res.json()) as { data?: unknown[] };
+    return json.data ?? [];
+  });
+
   ipcMain.handle("OPEN_WINDOW", (_e, name: string) => {
     openSubWindow(name);
     return true;

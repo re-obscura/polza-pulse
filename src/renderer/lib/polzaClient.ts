@@ -17,6 +17,7 @@ import type {
   GenerationsParams,
   GenerationsResult,
   GenerationRaw,
+  ModelInfo,
 } from "../../types";
 
 /* ---- Ошибки ---- */
@@ -199,6 +200,12 @@ export class PolzaClient {
       return raw.data as GenerationDetail;
     }
     return raw as GenerationDetail;
+  }
+
+  /** GET /v1/models — список доступных моделей (без авторизации). */
+  async getModels(): Promise<ModelInfo[]> {
+    const raw = await this.request<{ data: ModelInfo[] }>("/models");
+    return raw.data ?? [];
   }
 
   /**

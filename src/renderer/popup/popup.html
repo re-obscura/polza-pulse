@@ -14,11 +14,17 @@
       <!-- Шапка -->
       <header class="popup__head">
         <span class="popup__logo">polza-pulse</span>
+        <div class="popup__search-wrap" id="model-search-wrap">
+          <input class="popup__search" id="model-search" type="text"
+                 placeholder="Поиск модели…" autocomplete="off" />
+        </div>
         <div class="popup__head-actions">
           <button class="btn btn--ghost btn--sm" id="btn-theme" title="Сменить тему" aria-label="Сменить тему">◐</button>
           <button class="btn btn--ghost btn--sm" id="btn-settings" title="Настройки" aria-label="Настройки">⚙</button>
         </div>
       </header>
+      <!-- Дропдаун поиска моделей (вне header, чтобы растягиваться на ширину окна) -->
+      <div class="popup__model-results" id="model-results" hidden></div>
 
       <!-- ===== Вид: настройки ===== -->
       <section class="settings-panel" id="view-settings" hidden>
@@ -33,7 +39,7 @@
             <input class="input" id="key-value" type="password" placeholder="pza_..." autocomplete="off" style="flex:1 1 auto;min-width:0" />
             <button class="btn btn--primary" type="submit" id="key-save-btn">Сохранить</button>
           </form>
-          <p class="s-hint" id="key-hint">Хранится только на этом устройстве.</p>
+          <p class="s-hint" id="key-hint"></p>
         </section>
 
         <!-- Дневной лимит -->
@@ -43,9 +49,6 @@
             <input class="input nums" id="opt-limit" type="number" min="0" step="100" value="4000" style="font-size:var(--fs-display);font-weight:var(--fw-semibold);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.1;width:100%;border:0;background:none;color:var(--ink);padding:0;outline:none;border-bottom:1px dashed var(--rule-strong)" />
             <span style="color:var(--ink-3);font-size:var(--fs-body);flex-shrink:0">₽</span>
           </div>
-          <p style="color:var(--ink-3);font-size:var(--fs-micro);margin-top:var(--space-1)">
-            Порог расхода за один день.
-          </p>
         </section>
 
         <!-- Параметры -->
@@ -59,13 +62,6 @@
                 <option value="5">5 мин</option>
                 <option value="15">15 мин</option>
                 <option value="60">1 час</option>
-              </select>
-            </li>
-            <li>
-              <span class="model-name">На иконке</span>
-              <select class="select" id="opt-badge">
-                <option value="spendToday">Расход сегодня</option>
-                <option value="balance">Баланс</option>
               </select>
             </li>
           </ul>
@@ -94,7 +90,6 @@
               <span style="font-size:var(--fs-body);color:var(--ink)">Base URL API</span>
               <input class="input" id="opt-baseurl" type="text" placeholder="https://polza.ai/api/v1" />
             </label>
-            <p class="s-hint">Меняйте, только если знаете точный адрес.</p>
           </div>
         </details>
       </section>
