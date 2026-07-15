@@ -12,12 +12,8 @@ dist/
 *.exe
 *.blockmap
 
-# Папка с релизными артефактами для автообновления (в Git, ветка dev).
-# Исключаем из общих правил *.exe и *.blockmap.
-!releases/
-!releases/*.exe
-!releases/*.blockmap
-!releases/latest.yml
+# Папка с релизными артефактами (только в Azure DevOps, не в GitHub).
+releases/
 
 # Логи
 *.log
