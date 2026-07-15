@@ -1,3 +1,5 @@
+# Сборка macOS .dmg через GitHub Actions (macos-latest runner).
+# Триггер: тег v* или ручной запуск.
 name: Build macOS
 
 on:
